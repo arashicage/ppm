@@ -1,0 +1,168 @@
+px_01_01_01:
+  listen: 0.0.0.0:22121
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 192.168.99.100:6379:1 rs_01_0101_001
+   - 172.30.11.232:6379:1 rs_01_0101_002
+   - 172.30.11.231:6380:1 rs_01_0101_003
+   - 172.30.11.232:6380:1 rs_01_0101_004
+px_01_02_02:
+  listen: 0.0.0.0:22122
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6381:1 rs_01_0202_001
+   - 172.30.11.232:6381:1 rs_01_0202_002
+   - 172.30.11.231:6382:1 rs_01_0202_003
+   - 172.30.11.232:6382:1 rs_01_0202_004
+px_01_03_03:
+  listen: 0.0.0.0:22123
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6383:1 rs_01_0303_001
+   - 172.30.11.232:6383:1 rs_01_0303_002
+   - 172.30.11.231:6384:1 rs_01_0303_003
+   - 172.30.11.232:6384:1 rs_01_0303_004
+px_01_04_04:
+  listen: 0.0.0.0:22124
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6385:1 rs_01_0404_001
+   - 172.30.11.232:6385:1 rs_01_0404_002
+   - 172.30.11.231:6386:1 rs_01_0404_003
+   - 172.30.11.232:6386:1 rs_01_0404_004
+px_01_05_05:
+  listen: 0.0.0.0:22125
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6387:1 rs_01_0505_001
+   - 172.30.11.232:6387:1 rs_01_0505_002
+   - 172.30.11.231:6388:1 rs_01_0505_003
+   - 172.30.11.232:6388:1 rs_01_0505_004
+px_01_06_06:
+  listen: 0.0.0.0:22126
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6389:1 rs_01_0606_001
+   - 172.30.11.232:6389:1 rs_01_0606_002
+   - 172.30.11.231:6390:1 rs_01_0606_003
+   - 172.30.11.232:6390:1 rs_01_0606_004
+px_01_07_07:
+  listen: 0.0.0.0:22127
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6391:1 rs_01_0707_001
+   - 172.30.11.232:6391:1 rs_01_0707_002
+   - 172.30.11.231:6392:1 rs_01_0707_003
+   - 172.30.11.232:6392:1 rs_01_0707_004
+px_01_08_08:
+  listen: 0.0.0.0:22128
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6393:1 rs_01_0808_001
+   - 172.30.11.232:6393:1 rs_01_0808_002
+   - 172.30.11.231:6394:1 rs_01_0808_003
+   - 172.30.11.232:6394:1 rs_01_0808_004
+px_01_09_09:
+  listen: 0.0.0.0:22129
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6395:1 rs_01_0909_001
+   - 172.30.11.232:6395:1 rs_01_0909_002
+   - 172.30.11.231:6396:1 rs_01_0909_003
+   - 172.30.11.232:6396:1 rs_01_0909_004
+px_01_10_10:
+  listen: 0.0.0.0:22131
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6397:1 rs_01_1010_001
+   - 172.30.11.232:6397:1 rs_01_1010_002
+   - 172.30.11.231:6398:1 rs_01_1010_003
+   - 172.30.11.232:6398:1 rs_01_1010_004
+px_01_11_11:
+  listen: 0.0.0.0:22130
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6399:1 rs_01_1111_001
+   - 172.30.11.232:6399:1 rs_01_1111_002
+   - 172.30.11.231:6400:1 rs_01_1111_003
+   - 172.30.11.232:6400:1 rs_01_1111_004
+px_01_12_12:
+  listen: 0.0.0.0:22132
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: false
+  redis: true
+  hash_tag: "{}"
+  server_retry_timeout: 2000
+  server_failure_limit: 1
+  servers:
+   - 172.30.11.231:6401:1 rs_01_1212_001
+   - 172.30.11.232:6401:1 rs_01_1212_002
+   - 172.30.11.231:6402:1 rs_01_1212_003
+   - 172.30.11.232:6402:1 rs_01_1212_004
