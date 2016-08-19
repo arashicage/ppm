@@ -374,27 +374,27 @@ func initPasswdIni() {
 	} else {
 
 		log.Println("file passwd.ini alreay exists.")
-		log.Println("adjust entries according to proxy.yml.")
-		//文件已存在, 读取 yaml, 获取 instance 实例 url
-		//补全 passwd.ini 中的条目
-
-		cfg, err := ini.Load(passwd)
-		if err != nil {
-			//this will not happen for passwd exists in this branch
-			log.Println(err.Error())
-		}
-
-		for _, v := range instances {
-			x := strings.Replace(v, ":", "_", -1)
-			if !cfg.Section("DEFAULT").HasKey(x) {
-				cfg.Section("DEFAULT").NewKey(x, "")
-			}
-		}
-
-		cfg.SaveTo(passwd)
-
-		log.Println("success.")
 
 	}
 
+	log.Println("adjust entries according to proxy.yml.")
+	//文件已存在, 读取 yaml, 获取 instance 实例 url
+	//补全 passwd.ini 中的条目
+
+	cfg, err := ini.Load(passwd)
+	if err != nil {
+		//this will not happen for passwd exists in this branch
+		log.Println(err.Error())
+	}
+
+	for _, v := range instances {
+		x := strings.Replace(v, ":", "_", -1)
+		if !cfg.Section("DEFAULT").HasKey(x) {
+			cfg.Section("DEFAULT").NewKey(x, "")
+		}
+	}
+
+	cfg.SaveTo(passwd)
+
+	log.Println("success.")
 }
