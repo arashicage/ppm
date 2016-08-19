@@ -57,24 +57,25 @@ var (
 	details           map[string][]instance_info
 	passwdInfo        map[string]string
 	twemproxyConfig   map[string]TwemproxyConfig
+	timeout           int64
 )
 
+const f = "passwd.ini"
+
 func main() {
+
+	usage()
 
 	cfg, err := ini.Load("app.conf")
 	if err != nil {
 		fmt.Println("load ini fail", err)
 	}
 	conf := cfg.Section("DEFAULT").Key("proxy").String()
-	timeout := cfg.Section("DEFAULT").Key("timeout").MustInt64()
-
-	fmt.Println(conf,timeout)
+	timeout = cfg.Section("DEFAULT").Key("timeout").MustInt64()
 
 	groups, instances, details = loadTwemproxyConfig(conf)
 
 	initPasswdIni()
-
-	usage()
 
 	passwdInfo = getAuth()
 
@@ -155,6 +156,7 @@ func loadTwemproxyConfig(path string) (groups []string, instances []string, deta
 }
 
 func list(para1, para2 string) {
+
 	switch para1 {
 	case "": //只列出代理组编号和组信息
 
@@ -226,8 +228,10 @@ func list(para1, para2 string) {
 
 func setAuth(para1, para2 string) {
 
+	log.SetPrefix("...")
+
 	if para2 == "" {
-		fmt.Println("no passwd specified. you must be kidding me!")
+		log.Println("no passwd specified. you must be kidding me!")
 		return
 	}
 
@@ -242,11 +246,11 @@ func setAuth(para1, para2 string) {
 
 		id, err := strconv.Atoi(para1)
 		if err != nil {
-			fmt.Println("not a valid id, you must be kidding me!")
+			log.Println("not a valid id, you must be kidding me!")
 			return
 		}
 		if id >= len(instances) {
-			fmt.Println("id out of range, you must be kidding me!")
+			log.Println("id out of range, you must be kidding me!")
 			return
 		}
 		url := instances[id]
@@ -258,10 +262,10 @@ func setAuth(para1, para2 string) {
 
 func saveAuth(url, passwd string) {
 
-	f := "passwd.ini"
-	cfg, err := ini.Load("passwd.ini")
+	log.SetPrefix("-- save auth --")
+	cfg, err := ini.Load(f)
 	if err != nil {
-		fmt.Println("can not found file: passwd.ini")
+		fmt.Println("can not found file:", f)
 	}
 
 	cfg.Section("DEFAULT").Key(url).SetValue(passwd)
@@ -272,7 +276,7 @@ func saveAuth(url, passwd string) {
 
 func getAuth() map[string]string {
 
-	m := dumpAll("passwd.ini")
+	m := dumpAll(f)
 	return m
 
 }
@@ -282,9 +286,9 @@ func authRedis(url, currentPasswd, newPasswd string) {
 	log.SetPrefix("...")
 	log.Println("seting password for", url)
 
-	r, err := redis.DialTimeout("tcp", url, 1*time.Second, 1*time.Second, 1*time.Second)
+	r, err := redis.DialTimeout("tcp", url, time.Duration(timeout)*time.Second, time.Duration(timeout)*time.Second, time.Duration(timeout)*time.Second)
 	if err != nil {
-		log.Println(err, "(1 second). fail.")
+		log.Printf("%s (%d second). fail.", err, timeout)
 		return
 	}
 	defer r.Close()
@@ -301,7 +305,7 @@ func authRedis(url, currentPasswd, newPasswd string) {
 		return
 	}
 
-	log.Println("seting password for", url, "sucess.")
+	log.Println("seting password for", url, "success.")
 
 	//save new password to passwd.ini
 	saveAuth(strings.Replace(url, ":", "_", -1), newPasswd)
@@ -312,11 +316,13 @@ func authRedis(url, currentPasswd, newPasswd string) {
 
 func dumpAll(f string) map[string]string {
 
+	log.SetPrefix("-- dumpall -- ")
+
 	m := make(map[string]string)
 
 	cfg, err := ini.Load(f)
 	if err != nil {
-		fmt.Println("load ini fail", err)
+		log.Println("load ini fail", err)
 	}
 
 	sections := cfg.SectionStrings()
@@ -336,15 +342,15 @@ func dumpAll(f string) map[string]string {
 	return m
 }
 
-func echoPwd(){
+func echoPwd() {
 
 	data := [][]string{}
-	for i, v:= range instances {
-		data = append(data, []string{fmt.Sprint(i),v, passwdInfo["DEFAULT:"+v]})
+	for i, v := range instances {
+		data = append(data, []string{fmt.Sprint(i), v, passwdInfo["DEFAULT:"+v]})
 	}
 
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"ID","INSTANCE", "PASSWORD"})
+	table.SetHeader([]string{"ID", "INSTANCE", "PASSWORD"})
 
 	for _, v := range data {
 		table.Append(v)
@@ -353,36 +359,41 @@ func echoPwd(){
 
 }
 
-func initPasswdIni(){
+func initPasswdIni() {
 
-	passwd := "passwd.ini"
+	log.SetPrefix("-- init passwd.ini -- ")
+
+	passwd := f
 
 	//如果由 filename 指定的文件或目录存在则返回 true，否则返回 false
 	_, err := os.Stat(passwd)
 	if !(err == nil || os.IsExist(err)) {
 		//文件不存在, 创建 passwd.ini
-		fmt.Println("passwd.ini not exists")
 		os.Create(passwd)
-	}else{
-		fmt.Println("passwd.ini exists")
+		log.Println("file passwd.ini not exists, passwd.ini created.")
+	} else {
+
+		log.Println("file passwd.ini alreay exists.")
+		log.Println("adjust entries according to proxy.yml.")
 		//文件已存在, 读取 yaml, 获取 instance 实例 url
 		//补全 passwd.ini 中的条目
 
-		cfg,err := ini.Load(passwd)
+		cfg, err := ini.Load(passwd)
 		if err != nil {
-			fmt.Println(err.Error())
+			//this will not happen for passwd exists in this branch
+			log.Println(err.Error())
 		}
 
-		//_, instances, _ = loadTwemproxyConfig(y)
-
-		for _,v := range instances{
-			x := strings.Replace(v,":","_",-1)
-			if !cfg.Section("DEFAULT").HasKey(x){
-				cfg.Section("DEFAULT").NewKey(x,"")
+		for _, v := range instances {
+			x := strings.Replace(v, ":", "_", -1)
+			if !cfg.Section("DEFAULT").HasKey(x) {
+				cfg.Section("DEFAULT").NewKey(x, "")
 			}
 		}
 
 		cfg.SaveTo(passwd)
+
+		log.Println("success.")
 
 	}
 
